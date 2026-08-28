@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>私人陪伴面板</title>
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <section id="login-view" class="login-shell">
+    <div class="login-visual" aria-hidden="true">
+      <img src="/assets/logo.png" alt="">
+    </div>
+    <form id="login-form" class="login-panel">
+      <p class="eyebrow">MAIBOT COMPANION</p>
+      <h1>私人陪伴面板</h1>
+      <p class="muted">管理持续记忆、关系设定与主动关怀。</p>
+      <label>访问令牌<input id="login-token" type="password" autocomplete="current-password" required></label>
+      <button class="primary wide" type="submit">登录</button>
+      <p id="login-error" class="form-error" role="alert"></p>
+    </form>
+  </section>
+
+  <div id="app-view" class="app-shell hidden">
+    <aside class="sidebar">
+      <div class="brand"><img src="/assets/logo.png" alt=""><div><strong>陪伴面板</strong><span>MaiBot</span></div></div>
+      <nav id="nav">
+        <button class="nav-item active" data-panel="overview"><span class="nav-icon">◫</span>总览</button>
+        <button class="nav-item" data-panel="users"><span class="nav-icon">◎</span>陪伴对象</button>
+        <button class="nav-item" data-panel="settings"><span class="nav-icon">◇</span>关系与行为</button>
+        <button class="nav-item" data-panel="diagnostics"><span class="nav-icon">⌁</span>运行诊断</button>
+      </nav>
+      <button id="logout-button" class="logout">退出登录</button>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button id="menu-button" class="icon-button" title="打开导航" aria-label="打开导航">☰</button>
+        <div><p class="eyebrow">PRIVATE COMPANION</p><h2 id="page-title">总览</h2></div>
+        <div class="topbar-meta"><span id="clock">--:--</span><span id="runtime-dot" class="status-dot"></span></div>
+      </header>
+
+      <div id="toast" class="toast hidden" role="status"></div>
+
+      <section id="panel-overview" class="panel active">
+        <div class="section-heading"><div><h3>此刻</h3><p>陪伴系统当前的生活节奏与运行状态。</p></div><button class="secondary refresh">刷新</button></div>
+        <div id="overview-stats" class="stats-grid loading-block"></div>
+        <div class="content-grid">
+          <section class="surface"><div class="surface-head"><h4>陪伴对象</h4><button class="text-button" data-goto="users">管理</button></div><div id="overview-users" class="user-list"></div></section>
+          <section class="surface"><div class="surface-head"><h4>行为边界</h4></div><dl id="behavior-summary" class="detail-list"></dl></section>
+        </div>
+      </section>
+
+      <section id="panel-users" class="panel">
+        <div class="section-heading"><div><h3>陪伴对象</h3><p>查看每个人的连续状态、摘要和长期备注。</p></div><button class="secondary refresh">刷新</button></div>
+        <div class="users-layout">
+          <div id="users-list" class="surface user-directory"></div>
+          <section id="user-editor" class="surface editor-empty"><p>选择一个陪伴对象查看资料。</p></section>
+        </div>
+      </section>
+
+      <section id="panel-settings" class="panel">
+        <div class="section-heading"><div><h3>关系与行为</h3><p>这些设定会直接进入陪伴上下文和主动关怀判断。</p></div><button id="save-settings" class="primary">保存设置</button></div>
+        <form id="settings-form" class="settings-stack">
+          <section class="settings-band"><div class="band-intro"><h4>访问范围</h4><p>控制哪些 QQ 可以进入私人陪伴上下文。</p></div><div class="fields"><label class="toggle-row"><span><strong>启用插件</strong><small>关闭后不再注入陪伴上下文</small></span><input name="plugin.enabled" type="checkbox"></label><label>陪伴目标模式<select name="plugin.target_mode"><option value="whitelist">白名单：仅列表中的 QQ</option><option value="blacklist">黑名单：排除列表中的 QQ</option></select></label><label>目标 QQ 列表<input name="plugin.target_qqs" placeholder="多个 QQ 用逗号分隔"></label><label>管理员 QQ<input name="plugin.admin_qqs" placeholder="多个 QQ 用逗号分隔"></label></div></section>
+          <section class="settings-band"><div class="band-intro"><h4>关系设定</h4><p>补充动态关系，不覆盖 MaiBot 的主人格。</p></div><div class="fields"><label>默认称呼<input name="persona.user_nickname" maxlength="40"></label><label>关系定位<input name="persona.relationship" maxlength="160"></label><label>共同背景<textarea name="persona.shared_background" rows="4"></textarea></label><label>陪伴表达风格<textarea name="persona.companion_style" rows="4"></textarea></label><label class="toggle-row"><span><strong>群聊注入</strong><small>目标用户在群里发言时也带入私人上下文</small></span><input name="persona.inject_in_groups" type="checkbox"></label></div></section>
+          <section class="settings-band"><div class="band-intro"><h4>主动关怀</h4><p>控制联系频率、免打扰和随机触发。</p></div><div class="fields compact-grid"><label class="toggle-row span-2"><span><strong>启用主动关怀</strong><small>让 MaiBot 按人格自然生成主动消息</small></span><input name="proactive.enabled" type="checkbox"></label><label>检查间隔（分钟）<input name="proactive.check_interval_minutes" type="number" min="5" max="1440"></label><label>静默多久后联系（小时）<input name="proactive.min_silence_hours" type="number" min="0.5" max="168" step="0.5"></label><label>两次联系间隔（小时）<input name="proactive.min_gap_hours" type="number" min="1" max="168" step="0.5"></label><label>每日上限<input name="proactive.max_per_day" type="number" min="0" max="12"></label><label>触发概率（%）<input name="proactive.chance_percent" type="number" min="0" max="100"></label><label>免打扰开始<input name="proactive.quiet_start_hour" type="number" min="0" max="23"></label><label>免打扰结束<input name="proactive.quiet_end_hour" type="number" min="0" max="23"></label><label class="span-2">时区<input name="proactive.timezone" placeholder="Asia/Shanghai"></label></div></section>
+          <section class="settings-band"><div class="band-intro"><h4>连续记忆</h4><p>控制近期上下文和摘要更新节奏。</p></div><div class="fields compact-grid"><label class="toggle-row span-2"><span><strong>启用连续记忆</strong><small>记录近期互动并维护用户摘要</small></span><input name="memory.enabled" type="checkbox"></label><label>注入近期消息数<input name="memory.recent_message_count" type="number" min="0" max="40"></label><label>长期备注上限<input name="memory.max_notes" type="number" min="5" max="200"></label><label>摘要更新间隔<input name="memory.auto_summary_every" type="number" min="0" max="100"></label><label>摘要模型任务<input name="memory.llm_model_task"></label></div></section>
+        </form>
+      </section>
+
+      <section id="panel-diagnostics" class="panel">
+        <div class="section-heading"><div><h3>运行诊断</h3><p>检查调度器、会话索引和持久化状态。</p></div><button class="secondary refresh">刷新</button></div>
+        <div id="diagnostics-grid" class="diagnostics-grid"></div>
+      </section>
+    </main>
+  </div>
+  <div id="backdrop" class="backdrop hidden"></div>
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

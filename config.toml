@@ -1,0 +1,38 @@
+[plugin]
+enabled = true
+config_version = "1.3.0"
+admin_qqs = []
+target_qqs = []
+target_mode = "whitelist"
+
+[persona]
+user_nickname = ""
+relationship = "重要而亲近的长期陪伴对象"
+shared_background = ""
+companion_style = "自然、熟悉、有分寸；会主动关心，但不机械问候，也不声称不存在的共同经历"
+inject_in_groups = false
+
+[proactive]
+enabled = true
+check_interval_minutes = 10
+min_silence_hours = 1.5
+min_gap_hours = 3.0
+max_per_day = 5
+chance_percent = 70
+quiet_start_hour = 23
+quiet_end_hour = 8
+timezone = "Asia/Shanghai"
+
+[memory]
+enabled = true
+recent_message_count = 12
+max_notes = 40
+auto_summary_every = 16
+llm_model_task = "planner"
+
+[webui]
+enabled = false
+host = "0.0.0.0"
+port = 6190
+access_token = "change-me-at-least-12-chars"
+session_ttl_hours = 24

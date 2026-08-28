@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+config_back/
+*.bak*
+backups/
+companion_state.json
+.env
+.venv/
+venv/
